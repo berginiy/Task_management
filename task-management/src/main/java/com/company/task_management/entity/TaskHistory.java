@@ -1,0 +1,54 @@
+package com.company.task_management.entity;
+
+import com.company.task_management.enums.TaskStatus;
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Table(
+        name = "task_history",
+        indexes = {
+                @Index(name = "idx_task_history_task_id", columnList = "task_id"),
+                @Index(name = "idx_task_history_changed_at", columnList = "changed_at")
+        }
+)
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class TaskHistory {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id", nullable = false)
+    private Task task;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "changed_by", nullable = false)
+    private User changedBy;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "old_status", length = 30)
+    private TaskStatus oldStatus;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "new_status", nullable = false, length = 30)
+    private TaskStatus newStatus;
+
+    @Column(columnDefinition = "TEXT")
+    private String comment;
+
+    @CreatedDate
+    @Column(name = "changed_at", nullable = false, updatable = false)
+    private LocalDateTime changedAt;
+}
