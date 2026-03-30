@@ -14,7 +14,7 @@ public class UserResponseDto {
     private Role role;
     private UUID departmentId;
     private String departmentName;
-    private boolean isActive;
+    private boolean active;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

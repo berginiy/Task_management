@@ -26,6 +26,7 @@ import java.util.List;
 @Builder
 public class User extends BaseEntity implements UserDetails {
 
+    @Getter
     @Column(name = "full_name", nullable = false, length = 255)
     private String fullName;
 

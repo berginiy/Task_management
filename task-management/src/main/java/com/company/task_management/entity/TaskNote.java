@@ -33,5 +33,5 @@ public class TaskNote extends BaseEntity {
 
     @Column(name = "is_internal", nullable = false)
     @Builder.Default
-    private boolean Internal = false;
+    private boolean internal = false;
 }

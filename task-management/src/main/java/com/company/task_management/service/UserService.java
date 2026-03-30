@@ -6,7 +6,7 @@ import com.company.task_management.entity.Department;
 import com.company.task_management.entity.User;
 import com.company.task_management.repository.UserRepository;
 import com.company.task_management.repository.DepartmentRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.company.task_management.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public List<UserResponseDto> getAll() {
-        return userRepository.findAll().stream()
+        return userRepository.findAllByActiveTrue().stream()
                 .map(this::toDto)
                 .toList();
     }

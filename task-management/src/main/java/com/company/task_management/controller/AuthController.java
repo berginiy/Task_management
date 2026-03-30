@@ -1,8 +1,9 @@
 package com.company.task_management.controller;
 
 import com.company.task_management.security.JwtService;
-import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,14 +30,19 @@ public class AuthController {
         return ResponseEntity.ok(new TokenResponse(token));
     }
 
-    @Data
+    @Getter
+    @Setter
     public static class LoginRequest {
         private String email;
         private String password;
     }
 
-    @Data
+    @Getter
     public static class TokenResponse {
         private final String token;
+
+        public TokenResponse(String token) {
+            this.token = token;
+        }
     }
 }
