@@ -27,4 +27,5 @@ public class TaskResponseDto {
     private String executorName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private boolean nearDeadline;
 }

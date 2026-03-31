@@ -40,11 +40,11 @@ public class Task extends BaseEntity {
 
     @Column(name = "is_urgently", nullable = false)
     @Builder.Default
-    private boolean Urgently = false;
+    private boolean urgently = false;
 
     @Column(name = "is_expired", nullable = false)
     @Builder.Default
-    private boolean Expired = false;
+    private boolean expired = false;
 
     @Column(name = "received_at")
     private LocalDateTime receivedAt;
@@ -61,6 +61,10 @@ public class Task extends BaseEntity {
     @Column(name = "extension_requested", nullable = false)
     @Builder.Default
     private boolean extensionRequested = false;
+
+    @Column(name = "near_deadline", nullable = false)
+    @Builder.Default
+    private boolean nearDeadline = false;
 
     @Column(name = "extension_approved", nullable = false)
     @Builder.Default

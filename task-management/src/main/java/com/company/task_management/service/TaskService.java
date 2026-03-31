@@ -125,7 +125,7 @@ public class TaskService {
                 .orElseThrow(() -> new EntityNotFoundException("Task not found: " + id));
     }
 
-    public  TaskResponseDto toResponseDto(Task task) {
+    public TaskResponseDto toResponseDto(Task task) {
         TaskResponseDto dto = new TaskResponseDto();
         dto.setId(task.getId());
         dto.setTitle(task.getTitle());
@@ -133,6 +133,7 @@ public class TaskService {
         dto.setStatus(task.getStatus());
         dto.setUrgently(task.isUrgently());
         dto.setExpired(task.isExpired());
+        dto.setNearDeadline(task.isNearDeadline());
         dto.setDeadline(task.getDeadline());
         dto.setNewDeadline(task.getNewDeadline());
         dto.setEndDate(task.getEndDate());
