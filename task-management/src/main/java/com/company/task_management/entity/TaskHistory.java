@@ -1,6 +1,7 @@
 package com.company.task_management.entity;
 
 import com.company.task_management.enums.TaskStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -10,19 +11,14 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(
-        name = "task_history",
-        indexes = {
-                @Index(name = "idx_task_history_task_id", columnList = "task_id"),
-                @Index(name = "idx_task_history_changed_at", columnList = "changed_at")
-        }
-)
+@Table(name = "task_history")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class TaskHistory {
 
     @Id
@@ -31,10 +27,12 @@ public class TaskHistory {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id", nullable = false)
+    @JsonIgnoreProperties("history")
     private Task task;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "changed_by", nullable = false)
+    @JsonIgnoreProperties({"taskHistory"})
     private User changedBy;
 
     @Enumerated(EnumType.STRING)

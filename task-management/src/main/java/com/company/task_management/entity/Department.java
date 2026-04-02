@@ -1,35 +1,48 @@
 package com.company.task_management.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "departments")
 @Getter
 @Setter
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Department extends BaseEntity {
 
-    @Column(nullable = false, unique = true, length = 150)
+    @Column(nullable = false, length = 255)
     private String name;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 500)
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "head_user_id")
-    private User headUser;
+    private User head;
 
-    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
+    @ManyToMany
+    @JoinTable(
+            name = "department_users",
+            joinColumns = @JoinColumn(name = "department_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     @Builder.Default
-    private List<User> users = new ArrayList<>();
+    @JsonIgnoreProperties("departments")
+    private Set<User> users = new HashSet<>();
 
-    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
-    @Builder.Default
-    private List<Task> tasks = new ArrayList<>();
+    public void addUser(User user) {
+        this.users.add(user);
+    }
+
+    public void removeUser(User user) {
+        this.users.remove(user);
+    }
 }

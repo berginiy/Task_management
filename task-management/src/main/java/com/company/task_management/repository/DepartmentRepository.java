@@ -18,14 +18,14 @@ public interface DepartmentRepository extends JpaRepository<Department, UUID> {
 
     @Query("""
         SELECT d FROM Department d
-        LEFT JOIN FETCH d.headUser
+        LEFT JOIN FETCH d.head
         ORDER BY d.name ASC
     """)
     List<Department> findAllWithHeadUser();
 
     @Query("""
         SELECT d FROM Department d
-        WHERE d.headUser.id = :userId
+        WHERE d.head.id = :userId
     """)
     List<Department> findByHeadUserId(UUID userId);
 }

@@ -45,7 +45,7 @@ public class DepartmentService {
         if (dto.getHeadUserId() != null) {
             User head = userRepository.findById(dto.getHeadUserId())
                     .orElseThrow(() -> new EntityNotFoundException("User not found"));
-            department.setHeadUser(head);
+            department.setHead(head);
         }
 
         return toDto(departmentRepository.save(department));
@@ -65,9 +65,9 @@ public class DepartmentService {
         if (dto.getHeadUserId() != null) {
             User head = userRepository.findById(dto.getHeadUserId())
                     .orElseThrow(() -> new EntityNotFoundException("User not found"));
-            department.setHeadUser(head);
+            department.setHead(head);
         } else {
-            department.setHeadUser(null);
+            department.setHead(null);
         }
 
         return toDto(departmentRepository.save(department));
@@ -92,9 +92,9 @@ public class DepartmentService {
         dto.setCreatedAt(d.getCreatedAt());
         dto.setUpdatedAt(d.getUpdatedAt());
 
-        if (d.getHeadUser() != null) {
-            dto.setHeadUserId(d.getHeadUser().getId());
-            dto.setHeadUserName(d.getHeadUser().getFullName());
+        if (d.getHead() != null) {
+            dto.setHeadUserId(d.getHead().getId());
+            dto.setHeadUserName(d.getHead().getFullName());
         }
 
         return dto;

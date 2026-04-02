@@ -1,32 +1,26 @@
 package com.company.task_management.entity;
 
 import com.company.task_management.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Entity
-@Table(
-        name = "users",
-        indexes = {
-                @Index(name = "idx_users_email", columnList = "email"),
-                @Index(name = "idx_users_department_id", columnList = "department_id")
-        }
-)
+@Table(name = "users")
 @Getter
 @Setter
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "createdTasks", "assignedTasks", "taskExecutors"})
 public class User extends BaseEntity implements UserDetails {
 
-    @Getter
     @Column(name = "full_name", nullable = false, length = 255)
     private String fullName;
 
@@ -42,6 +36,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
+    @JsonIgnoreProperties("users")
     private Department department;
 
     @Column(name = "is_active", nullable = false)
@@ -59,6 +54,11 @@ public class User extends BaseEntity implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @Builder.Default
     private List<TaskExecutor> taskExecutors = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "users")
+    @Builder.Default
+    @JsonIgnoreProperties("users")
+    private Set<Department> departments = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
