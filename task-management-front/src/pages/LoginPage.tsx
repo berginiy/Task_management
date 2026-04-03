@@ -22,60 +22,70 @@ export default function LoginPage() {
 
         try {
             await login(email, password);
-            navigate('/');
-        } catch {
-            setError('Неверный email или пароль');
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Неверный email или пароль');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-            <div className="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md">
-                <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
-                    Task Manager
-                </h1>
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center p-4">
+            <div className="w-full max-w-md">
+                <div className="text-center mb-10">
+                    <div className="mx-auto w-20 h-20 bg-white/10 backdrop-blur-xl rounded-3xl flex items-center justify-center mb-6">
+                        <span className="text-5xl">📋</span>
+                    </div>
+                    <h1 className="text-4xl font-bold text-white">TaskFlow</h1>
+                    <p className="text-blue-300 mt-2">Войдите в свой аккаунт</p>
+                </div>
 
-                <form onSubmit={handleSubmit} className="space-y-5">
-                    {error && (
-                        <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm">
-                            {error}
+                <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl p-10 shadow-2xl">
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        {error && (
+                            <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-2xl text-sm">
+                                {error}
+                            </div>
+                        )}
+
+                        <div>
+                            <label className="block text-sm text-gray-300 mb-2">Email</label>
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-full bg-white/10 border border-white/20 rounded-2xl px-5 py-4 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                                placeholder="admin@taskmanager.com"
+                                required
+                            />
                         </div>
-                    )}
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="admin@example.com"
-                            required
-                        />
-                    </div>
+                        <div>
+                            <label className="block text-sm text-gray-300 mb-2">Пароль</label>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full bg-white/10 border border-white/20 rounded-2xl px-5 py-4 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                                placeholder="••••••••"
+                                required
+                            />
+                        </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Пароль</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="••••••••"
-                            required
-                        />
-                    </div>
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full btn-primary py-4 text-lg font-semibold disabled:opacity-70"
+                        >
+                            {loading ? 'Вход...' : 'Войти'}
+                        </button>
+                    </form>
+                </div>
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl transition-colors disabled:opacity-70"
-                    >
-                        {loading ? 'Вход...' : 'Войти'}
-                    </button>
-                </form>
+                <div className="text-center mt-8 text-gray-400 text-sm">
+                    Нет аккаунта?{' '}
+                    <a href="/register" className="text-blue-400 hover:text-blue-300">Зарегистрироваться</a>
+                </div>
             </div>
         </div>
     );

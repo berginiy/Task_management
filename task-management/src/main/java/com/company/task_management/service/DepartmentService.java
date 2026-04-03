@@ -2,6 +2,7 @@ package com.company.task_management.service;
 
 import com.company.task_management.dto.department.DepartmentRequestDto;
 import com.company.task_management.dto.department.DepartmentResponseDto;
+import com.company.task_management.dto.user.UserResponseDto;
 import com.company.task_management.entity.Department;
 import com.company.task_management.entity.User;
 import com.company.task_management.exception.DuplicateEntityException;
@@ -76,6 +77,31 @@ public class DepartmentService {
     @Transactional
     public void delete(UUID id) {
         departmentRepository.delete(findById(id));
+    }
+
+    public List<UserResponseDto> getAvailableUsers(UUID departmentId) {
+        return departmentRepository.findUsersWithoutDepartment().stream()
+                .map(user -> {
+                    UserResponseDto dto = new UserResponseDto();
+                    dto.setId(user.getId());
+                    dto.setFullName(user.getFullName());
+                    dto.setEmail(user.getEmail());
+                    dto.setRole(user.getRole().name());
+                    dto.setActive(user.isActive());
+                    return dto;
+                })
+                .toList();
+    }
+
+    @Transactional
+    public void addUsers(UUID departmentId, List<UUID> userIds) {
+        Department department = findById(departmentId);
+        for (UUID userId : userIds) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+            user.setDepartment(department);
+            userRepository.save(user);
+        }
     }
 
     private Department findById(UUID id) {

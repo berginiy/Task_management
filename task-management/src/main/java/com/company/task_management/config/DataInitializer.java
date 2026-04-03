@@ -1,6 +1,7 @@
 package com.company.task_management.config;
 
 import com.company.task_management.entity.User;
+import com.company.task_management.enums.Role;
 import com.company.task_management.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -17,22 +18,27 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         if (userRepository.findByEmail("admin@taskmanager.com").isEmpty()) {
-
             User admin = User.builder()
                     .fullName("Администратор")
                     .email("admin@taskmanager.com")
                     .passwordHash(passwordEncoder.encode("admin123"))
-                    .role(com.company.task_management.enums.Role.ADMIN)
+                    .role(Role.ADMIN)
                     .active(true)
                     .build();
-
             userRepository.save(admin);
+            System.out.println("✅ ADMIN создан: admin@taskmanager.com / admin123");
+        }
 
-            System.out.println("========================================");
-            System.out.println("✅ АДМИН УСПЕШНО СОЗДАН!");
-            System.out.println("Email: admin@taskmanager.com");
-            System.out.println("Пароль: admin123");
-            System.out.println("========================================");
+        if (userRepository.findByEmail("creator@taskmanager.com").isEmpty()) {
+            User creator = User.builder()
+                    .fullName("Создатель Задач")
+                    .email("creator@taskmanager.com")
+                    .passwordHash(passwordEncoder.encode("creator123"))
+                    .role(Role.CREATOR)
+                    .active(true)
+                    .build();
+            userRepository.save(creator);
+            System.out.println("✅ CREATOR создан: creator@taskmanager.com / creator123");
         }
     }
 }

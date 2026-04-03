@@ -36,24 +36,6 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getById(id));
     }
 
-    @GetMapping("/department/{departmentId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CREATOR')")
-    public ResponseEntity<List<TaskResponseDto>> getByDepartment(@PathVariable UUID departmentId) {
-        return ResponseEntity.ok(taskService.getByDepartment(departmentId));
-    }
-
-    @GetMapping("/executor/{executorId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CREATOR', 'EXECUTOR')")
-    public ResponseEntity<List<TaskResponseDto>> getByExecutor(@PathVariable UUID executorId) {
-        return ResponseEntity.ok(taskService.getByExecutor(executorId));
-    }
-
-    @GetMapping("/status/{status}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'CREATOR')")
-    public ResponseEntity<List<TaskResponseDto>> getByStatus(@PathVariable TaskStatus status) {
-        return ResponseEntity.ok(taskService.getByStatus(status));
-    }
-
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'CREATOR')")
     public ResponseEntity<TaskResponseDto> create(@Valid @RequestBody TaskRequestDto dto) {

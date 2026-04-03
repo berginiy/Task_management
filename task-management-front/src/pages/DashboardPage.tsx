@@ -25,39 +25,51 @@ export default function DashboardPage() {
     };
 
     return (
-        <div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-8">Дашборд</h1>
+        <div className="p-8">
+            <div className="mb-12">
+                <h1 className="text-4xl font-bold text-gray-900">Добро пожаловать обратно!</h1>
+                <p className="text-gray-500 mt-2 text-lg">Вот как обстоят дела с вашими задачами</p>
+            </div>
 
             {loading ? (
-                <p className="text-gray-500">Загрузка...</p>
+                <div className="text-center py-20 text-gray-500">Загрузка статистики...</div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <StatCard label="Всего задач" value={stats.total} color="blue" />
-                    <StatCard label="Новые" value={stats.new} color="gray" />
-                    <StatCard label="В работе" value={stats.inProgress} color="yellow" />
-                    <StatCard label="Завершены" value={stats.completed} color="green" />
-                    <StatCard label="Просрочены" value={stats.expired} color="red" />
-                    <StatCard label="Скоро дедлайн" value={stats.nearDeadline} color="orange" />
+                    <StatCard title="Всего задач" value={stats.total} color="blue" icon="📋" />
+                    <StatCard title="Новые" value={stats.new} color="gray" icon="✨" />
+                    <StatCard title="В работе" value={stats.inProgress} color="amber" icon="🔨" />
+                    <StatCard title="Завершены" value={stats.completed} color="emerald" icon="✅" />
+                    <StatCard title="Просрочены" value={stats.expired} color="red" icon="⚠️" />
+                    <StatCard title="Скоро дедлайн" value={stats.nearDeadline} color="orange" icon="⏰" />
                 </div>
             )}
         </div>
     );
 }
 
-function StatCard({ label, value, color }: { label: string; value: number; color: string }) {
-    const colors: Record<string, string> = {
-        blue: 'bg-blue-500', gray: 'bg-gray-500', yellow: 'bg-yellow-500',
-        green: 'bg-green-500', red: 'bg-red-500', orange: 'bg-orange-500',
+function StatCard({ title, value, color, icon }: {
+    title: string;
+    value: number;
+    color: string;
+    icon: string;
+}) {
+    const colorClasses = {
+        blue: 'from-blue-500 to-indigo-600',
+        gray: 'from-gray-500 to-slate-600',
+        amber: 'from-amber-500 to-yellow-600',
+        emerald: 'from-emerald-500 to-teal-600',
+        red: 'from-red-500 to-rose-600',
+        orange: 'from-orange-500 to-amber-600',
     };
 
     return (
-        <div className="card p-6 flex items-center gap-5">
-            <div className={`${colors[color]} w-14 h-14 rounded-2xl flex items-center justify-center text-white text-2xl font-bold`}>
-                {value}
-            </div>
-            <div>
-                <p className="text-gray-500 text-sm">{label}</p>
-                <p className="text-3xl font-bold text-gray-800">{value}</p>
+        <div className={`card bg-gradient-to-br ${colorClasses[color as keyof typeof colorClasses]} p-8 text-white`}>
+            <div className="flex justify-between items-start">
+                <div>
+                    <p className="text-lg opacity-90">{title}</p>
+                    <p className="text-6xl font-bold mt-4">{value}</p>
+                </div>
+                <div className="text-5xl opacity-80">{icon}</div>
             </div>
         </div>
     );

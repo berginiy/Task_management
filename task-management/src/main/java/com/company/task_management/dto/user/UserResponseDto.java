@@ -11,7 +11,7 @@ public class UserResponseDto {
     private UUID id;
     private String fullName;
     private String email;
-    private Role role;
+    private String role;
     private UUID departmentId;
     private String departmentName;
     private boolean active;

@@ -80,7 +80,7 @@ export default function DepartmentsPage() {
                 : [...prev, userId]
         );
     };
-    
+
     const handleAddUsers = async () => {
         if (!selectedDepartmentId || selectedUsers.length === 0) return;
 
@@ -91,11 +91,12 @@ export default function DepartmentsPage() {
             setShowAddUsersModal(false);
             setSelectedUsers([]);
 
-            await loadDepartments();
+            await loadDepartments(); 
 
         } catch (err: any) {
             console.error(err);
-            alert(err.response?.data?.message || "Ошибка при добавлении сотрудников");
+            const message = err.response?.data?.message || err.response?.data?.error || "Ошибка при добавлении сотрудников";
+            alert(message);
         }
     };
 

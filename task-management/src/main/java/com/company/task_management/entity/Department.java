@@ -40,9 +40,15 @@ public class Department extends BaseEntity {
 
     public void addUser(User user) {
         this.users.add(user);
+        if (user != null) {
+            user.getDepartments().add(this);
+        }
     }
 
     public void removeUser(User user) {
         this.users.remove(user);
+        if (user != null) {
+            user.getDepartments().remove(this);
+        }
     }
 }
