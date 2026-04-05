@@ -21,10 +21,16 @@ export default function ExtensionRequestModal({ taskId, onClose, onSuccess }: Pr
 
         try {
             await api.post(`/api/tasks/${taskId}/extension/request?newDeadline=${newDeadline}`);
-            alert('Запрос на продление отправлен!');
+            alert('Запрос на продление успешно отправлен!');
             onSuccess();
+            onClose();
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Не удалось отправить запрос');
+            const message = err.response?.data?.message || 'Не удалось отправить запрос';
+            setError(message);
+
+            if (message.includes("COMPLETED") || message.includes("недопустим")) {
+                setError("Нельзя запросить продление для уже завершённой задачи");
+            }
         } finally {
             setLoading(false);
         }

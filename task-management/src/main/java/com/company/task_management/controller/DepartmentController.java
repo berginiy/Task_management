@@ -6,6 +6,7 @@ import com.company.task_management.dto.user.UserResponseDto;
 import com.company.task_management.entity.Department;
 import com.company.task_management.entity.User;
 import com.company.task_management.repository.DepartmentRepository;
+import com.company.task_management.repository.TaskRepository;
 import com.company.task_management.repository.UserRepository;
 import com.company.task_management.service.DepartmentService;
 import jakarta.validation.Valid;
@@ -13,10 +14,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -28,6 +32,7 @@ public class DepartmentController {
     private final DepartmentService departmentService;
     private final DepartmentRepository departmentRepository;
     private final UserRepository userRepository;
+    private final TaskRepository taskRepository;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'CREATOR', 'EXECUTOR')")
@@ -59,10 +64,39 @@ public class DepartmentController {
         return ResponseEntity.ok(departmentService.update(id, dto));
     }
 
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        departmentService.delete(id);
+    @Transactional
+    public ResponseEntity<Void> deleteDepartment(@PathVariable UUID id) {
+        Department department = departmentRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Отдел не найден"));
+
+        long taskCount = taskRepository.countByDepartmentId(id);
+        if (taskCount > 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Нельзя удалить отдел '" + department.getName() + "', потому что к нему привязано "
+                            + taskCount + " задач(и). Сначала удалите или перенесите задачи.");
+        }
+
+        try {
+            if (department.getUsers() != null) {
+                Set<User> usersCopy = new HashSet<>(department.getUsers());
+                for (User user : usersCopy) {
+                    department.removeUser(user);
+                }
+            }
+
+            departmentRepository.save(department);
+
+            departmentRepository.deleteDepartmentUsers(id);
+
+        } catch (Exception e) {
+            System.err.println("Ошибка при очистке связей отдела " + id + ": " + e.getMessage());
+        }
+
+        departmentRepository.deleteById(id);
+
         return ResponseEntity.noContent().build();
     }
 
@@ -95,6 +129,7 @@ public class DepartmentController {
 
         return ResponseEntity.ok().build();
     }
+
 
     private DepartmentResponseDto convertToResponseDto(Department department) {
         DepartmentResponseDto dto = new DepartmentResponseDto();

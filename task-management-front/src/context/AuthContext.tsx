@@ -9,33 +9,38 @@ interface AuthContextType {
     login: (email: string, password: string) => Promise<void>;
     logout: () => void;
     isAuthenticated: boolean;
+    isAdmin: boolean;
+    isCreator: boolean;
+    isExecutor: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [token, setToken] = useState<string | null>(
-        localStorage.getItem('token')
-    );
+    const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
     const [currentUser, setCurrentUser] = useState<User | null>(null);
 
     useEffect(() => {
         if (token) {
             api.get('/api/auth/me')
-                .then(res => setCurrentUser(res.data))
+                .then(res => {
+                    setCurrentUser(res.data);
+                })
                 .catch(() => {
                     localStorage.removeItem('token');
                     setToken(null);
                     setCurrentUser(null);
                 });
+        } else {
+            setCurrentUser(null);
         }
     }, [token]);
 
     const login = async (email: string, password: string) => {
         const response = await api.post('/api/auth/login', { email, password });
-        const { token } = response.data;
-        localStorage.setItem('token', token);
-        setToken(token);
+        const { token: newToken } = response.data;
+        localStorage.setItem('token', newToken);
+        setToken(newToken);
     };
 
     const logout = () => {
@@ -44,13 +49,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setCurrentUser(null);
     };
 
+    const isAdmin = currentUser?.role === 'ADMIN';
+    const isCreator = currentUser?.role === 'CREATOR';
+    const isExecutor = currentUser?.role === 'EXECUTOR';
+
     return (
         <AuthContext.Provider value={{
             token,
             currentUser,
             login,
             logout,
-            isAuthenticated: !!token
+            isAuthenticated: !!token,
+            isAdmin,
+            isCreator,
+            isExecutor,
         }}>
             {children}
         </AuthContext.Provider>

@@ -38,4 +38,7 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
       AND t.expired = false
 """)
     List<Task> findExpiredTasks(LocalDateTime now);
+
+    @Query("SELECT COUNT(t) FROM Task t WHERE t.department.id = :departmentId")
+    long countByDepartmentId(UUID departmentId);
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,6 +37,7 @@ public class Department extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     @Builder.Default
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnoreProperties("departments")
     private Set<User> users = new HashSet<>();
 
@@ -47,6 +50,9 @@ public class Department extends BaseEntity {
     public void removeUser(User user) {
         if (user == null) return;
         this.users.remove(user);
-        user.getDepartments().remove(this);
+
+        if (user.getDepartments() != null) {
+            user.getDepartments().remove(this);
+        }
     }
 }

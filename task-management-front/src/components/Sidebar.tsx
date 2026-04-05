@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { LayoutDashboard, ListTodo, Users, Building2, UserPlus, LogOut } from 'lucide-react';
 
 export default function Sidebar() {
-    const { user, logout, isAdmin, isCreator } = useAuth();
+    const { currentUser, logout, isAdmin, isCreator } = useAuth();
 
     const menuItems = [
         { to: '/', label: 'Дашборд', icon: LayoutDashboard },
@@ -23,7 +23,6 @@ export default function Sidebar() {
 
     return (
         <div className="w-72 min-h-screen bg-gray-900 text-white flex flex-col border-r border-gray-800">
-            {/* Логотип */}
             <div className="p-8 flex items-center gap-4 border-b border-gray-800">
                 <div className="w-11 h-11 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-2xl flex items-center justify-center">
                     <span className="text-gray-900 font-black text-3xl">T</span>
@@ -34,7 +33,6 @@ export default function Sidebar() {
                 </div>
             </div>
 
-            {/* Меню */}
             <nav className="flex-1 px-6 py-8 space-y-2">
                 {menuItems.map((item) => {
                     const Icon = item.icon;
@@ -57,17 +55,20 @@ export default function Sidebar() {
                 })}
             </nav>
 
-            {/* Профиль + Выход */}
             <div className="p-6 border-t border-gray-800">
                 <div className="flex items-center gap-3 mb-6 px-2">
                     <div className="w-10 h-10 bg-gray-700 rounded-2xl flex items-center justify-center text-xl">
                         👤
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm truncate">{user?.fullName}</p>
-                        <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                        <p className="font-semibold text-sm truncate">
+                            {currentUser?.fullName || 'Пользователь'}
+                        </p>
+                        <p className="text-xs text-gray-500 truncate">
+                            {currentUser?.email || ''}
+                        </p>
                         <p className="text-[10px] text-emerald-400 font-medium">
-                            {user?.role}
+                            {currentUser?.role || ''}
                         </p>
                     </div>
                 </div>

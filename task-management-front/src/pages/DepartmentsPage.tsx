@@ -41,7 +41,7 @@ export default function DepartmentsPage() {
 
     const openUsersModal = (dept: Department) => {
         setSelectedDepartment(dept);
-        setDepartmentUsers(dept.users || []);   
+        setDepartmentUsers(dept.users || []);
         setShowUsersModal(true);
     };
 
@@ -96,12 +96,20 @@ export default function DepartmentsPage() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Удалить отдел?')) return;
+        if (!confirm('Вы действительно хотите удалить этот отдел?')) return;
+
         try {
             await api.delete(`/api/departments/${id}`);
-            loadDepartments();
-        } catch (err) {
-            alert("Ошибка при удалении");
+            alert('Отдел успешно удалён');
+            loadDepartments();       
+        } catch (err: any) {
+            console.error("Ошибка при удалении отдела:", err);
+
+            const errorMessage = err.response?.data?.message
+                || err.response?.data?.error
+                || "Не удалось удалить отдел. Возможно, к нему привязаны задачи.";
+
+            alert(errorMessage);
         }
     };
 

@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -74,12 +76,46 @@ public class DepartmentService {
         return toDto(departmentRepository.save(department));
     }
 
+
     @Transactional
     public void delete(UUID id) {
-        departmentRepository.delete(findById(id));
+        Department department = findById(id);
+
+        departmentRepository.deleteDepartmentUsers(id);
+
+        if (department.getUsers() != null && !department.getUsers().isEmpty()) {
+            Set<User> usersCopy = new HashSet<>(department.getUsers());
+            for (User user : usersCopy) {
+                department.removeUser(user);
+            }
+        }
+
+        department.setHead(null);
+
+        departmentRepository.save(department);
+
+        departmentRepository.delete(department);
     }
 
+
+    @Transactional
+    public void addUsers(UUID departmentId, List<UUID> userIds) {
+        Department department = findById(departmentId);
+
+        for (UUID userId : userIds) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+
+            department.addUser(user);
+        }
+
+        departmentRepository.save(department);
+    }
+
+
     public List<UserResponseDto> getAvailableUsers(UUID departmentId) {
+        findById(departmentId); // бросит исключение, если отдела нет
+
         return departmentRepository.findUsersWithoutDepartment().stream()
                 .map(user -> {
                     UserResponseDto dto = new UserResponseDto();
@@ -93,17 +129,6 @@ public class DepartmentService {
                 .toList();
     }
 
-    @Transactional
-    public void addUsers(UUID departmentId, List<UUID> userIds) {
-        Department department = findById(departmentId);
-        for (UUID userId : userIds) {
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
-            user.setDepartment(department);
-            userRepository.save(user);
-        }
-    }
-
     private Department findById(UUID id) {
         return departmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Department not found: " + id));
@@ -114,7 +139,7 @@ public class DepartmentService {
         dto.setId(d.getId());
         dto.setName(d.getName());
         dto.setDescription(d.getDescription());
-        dto.setUserCount(d.getUsers().size());
+        dto.setUserCount(d.getUsers() != null ? d.getUsers().size() : 0);
         dto.setCreatedAt(d.getCreatedAt());
         dto.setUpdatedAt(d.getUpdatedAt());
 
