@@ -39,16 +39,14 @@ public class Department extends BaseEntity {
     private Set<User> users = new HashSet<>();
 
     public void addUser(User user) {
+        if (user == null) return;
         this.users.add(user);
-        if (user != null) {
-            user.getDepartments().add(this);
-        }
+        user.getDepartments().add(this);
     }
 
     public void removeUser(User user) {
+        if (user == null) return;
         this.users.remove(user);
-        if (user != null) {
-            user.getDepartments().remove(this);
-        }
+        user.getDepartments().remove(this);
     }
 }

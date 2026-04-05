@@ -19,20 +19,22 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserService {
 
+
     private final UserRepository userRepository;
     private final DepartmentRepository departmentRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional(readOnly = true)
     public List<UserResponseDto> getAll() {
         return userRepository.findAllByActiveTrue().stream()
                 .map(this::toDto)
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public UserResponseDto getById(UUID id) {
         return toDto(findById(id));
     }
-
     @Transactional
     public UserResponseDto create(UserRequestDto dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
@@ -107,6 +109,11 @@ public class UserService {
         if (user.getDepartment() != null) {
             dto.setDepartmentId(user.getDepartment().getId());
             dto.setDepartmentName(user.getDepartment().getName());
+        }
+        else if (user.getDepartments() != null && !user.getDepartments().isEmpty()) {
+            Department dept = user.getDepartments().iterator().next();
+            dto.setDepartmentId(dept.getId());
+            dto.setDepartmentName(dept.getName());
         }
 
         return dto;

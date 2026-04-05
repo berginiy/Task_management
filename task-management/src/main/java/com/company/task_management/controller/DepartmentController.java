@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/departments")
@@ -31,7 +32,12 @@ public class DepartmentController {
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'CREATOR', 'EXECUTOR')")
     public ResponseEntity<List<DepartmentResponseDto>> getAll() {
-        return ResponseEntity.ok(departmentService.getAll());
+        List<Department> departments = departmentRepository.findAllWithUsersAndHead();
+        return ResponseEntity.ok(
+                departments.stream()
+                        .map(this::convertToResponseDto)
+                        .collect(Collectors.toList())
+        );
     }
 
     @GetMapping("/{id}")
@@ -88,5 +94,39 @@ public class DepartmentController {
         departmentRepository.save(department);
 
         return ResponseEntity.ok().build();
+    }
+
+    private DepartmentResponseDto convertToResponseDto(Department department) {
+        DepartmentResponseDto dto = new DepartmentResponseDto();
+
+        dto.setId(department.getId());
+        dto.setName(department.getName());
+        dto.setDescription(department.getDescription());
+        dto.setCreatedAt(department.getCreatedAt());
+        dto.setUpdatedAt(department.getUpdatedAt());
+
+        if (department.getHead() != null) {
+            dto.setHeadUserId(department.getHead().getId());
+            dto.setHeadUserName(department.getHead().getFullName());
+        }
+
+        dto.setUserCount(department.getUsers() != null ? department.getUsers().size() : 0);
+
+        if (department.getUsers() != null) {
+            dto.setUsers(
+                    department.getUsers().stream()
+                            .map(user -> {
+                                UserResponseDto userDto = new UserResponseDto();
+                                userDto.setId(user.getId());
+                                userDto.setFullName(user.getFullName());
+                                userDto.setEmail(user.getEmail());
+                                userDto.setRole(user.getRole().name());
+                                return userDto;
+                            })
+                            .collect(Collectors.toList())
+            );
+        }
+
+        return dto;
     }
 }

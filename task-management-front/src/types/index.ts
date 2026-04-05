@@ -2,19 +2,24 @@ export interface User {
     id: string;
     fullName: string;
     email: string;
-    role: string;
+    role: 'ADMIN' | 'CREATOR' | 'EXECUTOR';
+    departmentId?: string;
     departmentName?: string;
-    active?: boolean;
+    active: boolean;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface Department {
     id: string;
     name: string;
     description?: string;
+    headUserId?: string;
     headUserName?: string;
-    userCount?: number;
-    users?: User[];           
-    head?: User;
+    userCount: number;
+    users?: User[];
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface Task {
@@ -23,12 +28,23 @@ export interface Task {
     description?: string;
     status: 'NEW' | 'IN_PROGRESS' | 'PENDING_REVIEW' | 'EXTENSION_REQUESTED' | 'COMPLETED' | 'REJECTED' | 'EXPIRED';
     urgently: boolean;
-    nearDeadline: boolean;
     expired: boolean;
+    nearDeadline: boolean;
     deadline?: string;
-    departmentName?: string;
-    executorName?: string;
-    creatorId?: string;
-    executorId?: string;
+    newDeadline?: string;
+    endDate?: string;
+    extensionRequested: boolean;
+    extensionApproved: boolean;
     departmentId?: string;
+    departmentName?: string;
+    creatorId: string;
+    creatorName: string;
+    executorId?: string;
+    executorName?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface AuthResponse {
+    token: string;
 }
