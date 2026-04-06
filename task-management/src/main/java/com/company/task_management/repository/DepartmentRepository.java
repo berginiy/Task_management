@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +29,10 @@ public interface DepartmentRepository extends JpaRepository<Department, UUID> {
     void deleteAllDepartmentUsers(@Param("departmentId") UUID departmentId);
 
     @Modifying
-    @Transactional
     @Query(value = "DELETE FROM department_users WHERE department_id = :departmentId", nativeQuery = true)
     void deleteDepartmentUsers(@Param("departmentId") UUID departmentId);
+
+    @Modifying
+    @Query("UPDATE Task t SET t.department = null WHERE t.department.id = :departmentId")
+    void clearDepartmentFromTasks(@Param("departmentId") UUID departmentId);
 }

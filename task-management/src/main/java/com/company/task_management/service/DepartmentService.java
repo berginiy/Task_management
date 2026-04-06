@@ -83,15 +83,7 @@ public class DepartmentService {
 
         departmentRepository.deleteDepartmentUsers(id);
 
-        if (department.getUsers() != null && !department.getUsers().isEmpty()) {
-            Set<User> usersCopy = new HashSet<>(department.getUsers());
-            for (User user : usersCopy) {
-                department.removeUser(user);
-            }
-        }
-
         department.setHead(null);
-
         departmentRepository.save(department);
 
         departmentRepository.delete(department);
@@ -114,7 +106,7 @@ public class DepartmentService {
 
 
     public List<UserResponseDto> getAvailableUsers(UUID departmentId) {
-        findById(departmentId); // бросит исключение, если отдела нет
+        findById(departmentId);
 
         return departmentRepository.findUsersWithoutDepartment().stream()
                 .map(user -> {

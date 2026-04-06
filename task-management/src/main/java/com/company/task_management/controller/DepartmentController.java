@@ -72,28 +72,11 @@ public class DepartmentController {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Отдел не найден"));
 
-        long taskCount = taskRepository.countByDepartmentId(id);
-        if (taskCount > 0) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Нельзя удалить отдел '" + department.getName() + "', потому что к нему привязано "
-                            + taskCount + " задач(и). Сначала удалите или перенесите задачи.");
-        }
+        taskRepository.clearDepartmentFromTasks(id);
 
-        try {
-            if (department.getUsers() != null) {
-                Set<User> usersCopy = new HashSet<>(department.getUsers());
-                for (User user : usersCopy) {
-                    department.removeUser(user);
-                }
-            }
+        userRepository.clearDepartmentFromUsers(id);
 
-            departmentRepository.save(department);
-
-            departmentRepository.deleteDepartmentUsers(id);
-
-        } catch (Exception e) {
-            System.err.println("Ошибка при очистке связей отдела " + id + ": " + e.getMessage());
-        }
+        departmentRepository.deleteDepartmentUsers(id);
 
         departmentRepository.deleteById(id);
 
