@@ -63,7 +63,6 @@ export default function RegisterPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
             <div className="bg-white rounded-3xl shadow-xl w-full max-w-md overflow-hidden">
-                {/* Header */}
                 <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-10 text-white text-center">
                     <h1 className="text-4xl font-bold mb-2">Task Manager</h1>
                     <p className="text-blue-100">Создайте аккаунт</p>

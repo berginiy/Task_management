@@ -33,7 +33,6 @@ export default function TasksPage() {
     const [myTasksOnly, setMyTasksOnly] = useState(true);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
-    // Модалка запроса продления дедлайна
     const [showExtensionModal, setShowExtensionModal] = useState(false);
     const [taskForExtension, setTaskForExtension] = useState<Task | null>(null);
 
@@ -91,7 +90,6 @@ export default function TasksPage() {
         }
     };
 
-    // Умная подсветка строки
     const getRowClass = (task: Task) => {
         if (task.expired) return 'bg-red-50 hover:bg-red-100 border-l-4 border-red-500';
         if (task.nearDeadline) return 'bg-orange-50 hover:bg-orange-100 border-l-4 border-orange-500';
@@ -112,17 +110,15 @@ export default function TasksPage() {
         );
     };
 
-    // Открытие модалки продления
     const handleRequestExtension = (task: Task) => {
         setTaskForExtension(task);
         setShowExtensionModal(true);
     };
 
-    // После успешного запроса продления
     const handleExtensionSuccess = () => {
         setShowExtensionModal(false);
         setTaskForExtension(null);
-        loadTasks(); // обновляем список задач
+        loadTasks(); 
     };
 
     const filtered = tasks
@@ -238,13 +234,12 @@ export default function TasksPage() {
                                                 </>
                                             )}
 
-                                            {/* === КНОПКА ЗАПРОСИТЬ ПРОДЛЕНИЕ === */}
                                             {isExecutor && (task.expired || task.nearDeadline) && (
                                                 <button
                                                     onClick={() => handleRequestExtension(task)}
                                                     className="text-amber-600 hover:text-amber-700 hover:underline font-medium flex items-center gap-1"
                                                 >
-                                                    ⏳ Запросить продление
+                                                     Запросить продление
                                                 </button>
                                             )}
 
@@ -271,7 +266,7 @@ export default function TasksPage() {
                 </div>
             )}
 
-            {/* Модальное окно подробной информации о задаче */}
+            
             {selectedTask && (
                 <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-3xl w-full max-w-3xl max-h-[92vh] overflow-hidden shadow-2xl flex flex-col">
@@ -352,7 +347,6 @@ export default function TasksPage() {
                 </div>
             )}
 
-            {/* Модальное окно запроса продления дедлайна */}
             {showExtensionModal && taskForExtension && (
                 <ExtensionRequestModal
                     taskId={taskForExtension.id}

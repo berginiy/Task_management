@@ -69,7 +69,6 @@ function StatCard({ title, value, color, icon }: {
                     <p className="text-lg opacity-90">{title}</p>
                     <p className="text-6xl font-bold mt-4">{value}</p>
                 </div>
-                <div className="text-5xl opacity-80">{icon}</div>
             </div>
         </div>
     );

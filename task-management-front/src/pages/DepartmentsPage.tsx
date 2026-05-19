@@ -127,7 +127,6 @@ export default function DepartmentsPage() {
 
             {error && <div className="bg-red-50 text-red-600 p-4 rounded-2xl mb-6">{error}</div>}
 
-            {/* Форма создания отдела */}
             {showForm && (
                 <div className="bg-white rounded-3xl shadow p-8 mb-10">
                     <form onSubmit={handleCreate} className="space-y-6">
@@ -190,7 +189,6 @@ export default function DepartmentsPage() {
 
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <span className="text-3xl">👥</span>
                                     <div>
                                         <p className="text-sm text-gray-500">Сотрудников</p>
                                         <p className="text-2xl font-semibold text-blue-600">
