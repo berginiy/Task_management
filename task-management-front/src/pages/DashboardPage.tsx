@@ -35,23 +35,22 @@ export default function DashboardPage() {
                 <div className="text-center py-20 text-gray-500">Загрузка статистики...</div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <StatCard title="Всего задач" value={stats.total} color="blue" icon="📋" />
-                    <StatCard title="Новые" value={stats.new} color="gray" icon="✨" />
-                    <StatCard title="В работе" value={stats.inProgress} color="amber" icon="🔨" />
-                    <StatCard title="Завершены" value={stats.completed} color="emerald" icon="✅" />
-                    <StatCard title="Просрочены" value={stats.expired} color="red" icon="⚠️" />
-                    <StatCard title="Скоро дедлайн" value={stats.nearDeadline} color="orange" icon="⏰" />
+                    <StatCard title="Всего задач" value={stats.total} color="blue" />
+                    <StatCard title="Новые" value={stats.new} color="gray" />
+                    <StatCard title="В работе" value={stats.inProgress} color="amber" />
+                    <StatCard title="Завершены" value={stats.completed} color="emerald" />
+                    <StatCard title="Просрочены" value={stats.expired} color="red" />
+                    <StatCard title="Скоро дедлайн" value={stats.nearDeadline} color="orange" />
                 </div>
             )}
         </div>
     );
 }
 
-function StatCard({ title, value, color, icon }: {
+function StatCard({ title, value, color }: {
     title: string;
     value: number;
     color: string;
-    icon: string;
 }) {
     const colorClasses = {
         blue: 'from-blue-500 to-indigo-600',
